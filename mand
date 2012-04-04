@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+
+# image width height
+width=1024 
+height=768
+nbsteps=1024 
+xpos="-1.351"
+ypos="0.06"
+size="0.0005"
+filename="mandelbrot.png"
+
+PARAMS="$width $height $nbsteps $xpos $ypos $size $filename"
+
+eval time ./mandelbrot $PARAMS

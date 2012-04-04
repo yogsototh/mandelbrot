@@ -26,11 +26,11 @@ type Angle  = R
 
 -- Structure for global parameters
 data Global = Global { 
-          pixelsx :: Int
-        , pixelsy :: Int
+          imgWidth :: Int
+        , imgHeight :: Int
         , nbsteps :: Int
-        , centerx :: Float
-        , centery :: Float
+        , xpos :: Float
+        , ypos :: Float
         , width   :: Float
         , scale   :: Float
         , height  :: Float 
@@ -74,8 +74,8 @@ indexToFloat i pixels center length =
 
 mandel :: Global ->  DIM2-> R
 mandel env (Z :. i :. j ) = (intToFloat m :: Float) / (intToFloat (nbsteps env):: Float)
-    where x = indexToFloat j (pixelsx env) (centerx env) (width env)
-          y = indexToFloat i (pixelsy env) (centery env) (height env)
+    where x = indexToFloat j (imgWidth env) (xpos env) (width env)
+          y = indexToFloat i (imgHeight env) (ypos env) (height env)
           n = f (C(x,y)) (C(0,0)) (nbsteps env)
           m | n == 0 = div ((nbsteps env) * 90) 100
             | otherwise = n
@@ -86,21 +86,27 @@ toImage arr = R.traverse arr8 (:. 4) chans where
     chans _ (Z :. _ :. _ :. 3) = 255 -- alpha channel
     chans a (Z :. x :. y :. _) = a (Z :. x :. y)
 
-main :: IO ()
-main = do
-    args <- getArgs
-    let
-        sc = (read (args !! 5)) / (read $ head args) 
-        params = Global {
-              pixelsx = read (args !! 0)
-            , pixelsy = read (args !! 1)
+initGlobalParams args = Global {
+              imgWidth = read (args !! 0)
+            , imgHeight = read (args !! 1)
             , nbsteps = read (args !! 2)
-            , centerx = read (args !! 3)
-            , centery = read (args !! 4)
+            , xpos = read (args !! 3)
+            , ypos = read (args !! 4)
             , width   = read (args !! 5)
             , scale   = sc
             , height  = (read (args !! 1)) * sc
             , filename = args !! 6 }
-        arr = R.fromFunction (Z :. (pixelsy params) :. (pixelsx params)) (mandel params)
-    removeIfExists (filename params)
-    D.runIL $ D.writeImage (filename params) (toImage arr)
+        where
+            sc = (read (args !! 5)) / (read $ head args) 
+
+matrix width height = Z :. height :. width
+
+main :: IO ()
+main = do
+    args <- getArgs
+    let
+        env = initGlobalParams args
+        surface = matrix (imgWidth env) (imgHeight env)
+        arr = R.fromFunction surface (mandel env)
+    removeIfExists (filename env)
+    D.runIL $ D.writeImage (filename env) (toImage arr)
