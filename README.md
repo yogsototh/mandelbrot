@@ -2,9 +2,14 @@
 
 
 A parallel generation of the Mandelbrot set.
-It generates a B&W image.
+
+It uses repa and repa-devil.
 
 As always Haskell rocks.
+
+Don't look too much to the quality of this code.
+It is more a hack than a real project.
+But it remains a nice example.
 
 Here is the result:
 
