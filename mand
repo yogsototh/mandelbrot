@@ -3,7 +3,7 @@
 # image width height
 width=2048
 height=1024
-nbsteps=1024
+nbsteps=512
 xpos="-1.45203"
 ypos="0"
 size="0.0001"
