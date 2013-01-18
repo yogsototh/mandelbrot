@@ -73,7 +73,7 @@ indexToDouble i pixels center length =
         m    = length / p
 
 mandel :: Global ->  DIM2-> R
-mandel env (Z :. i :. j ) = (intToDouble m :: Double) / (intToDouble (nbsteps env):: Double)
+mandel env (Z :. i :. j ) = (intToDouble (m `rem` 512) :: Double) / (intToDouble (min (nbsteps env) 512):: Double)
     where x = indexToDouble j (imgWidth env) (xpos env) (width env)
           y = indexToDouble i (imgHeight env) (ypos env) (height env)
           n = f (C x y) (C 0 0) (nbsteps env)
@@ -91,7 +91,7 @@ toImage arr = D.RGBA $
                 chans a (Z :. x :. y :. 1) = greenFromDouble $ a (Z :. x :. y)
                 chans a (Z :. x :. y :. 2) =  blueFromDouble $ a (Z :. x :. y)
                 chans _ (Z :. _ :. _ :. 3) = 255
-                t n = round $ 255 * ( 0.5 + 0.5*cos( fromIntegral n / 10 ) )
+                t n = round $ 255 * ( 0.5 + 0.5*cos( (fromIntegral n) / 10 ) )
                 redFromDouble = t
                 greenFromDouble x = t (x+5)
                 blueFromDouble x = t (x+10)
