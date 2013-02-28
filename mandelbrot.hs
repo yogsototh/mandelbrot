@@ -21,8 +21,6 @@ import Prelude hiding (catch)
 import Control.Exception
 
 type R      = Double
-type R2     = (R,R)
-type Angle  = R
 
 -- Structure for global parameters
 data Global = Global {
@@ -91,10 +89,15 @@ toImage arr = D.RGBA $
                 chans a (Z :. x :. y :. 1) = greenFromDouble $ a (Z :. x :. y)
                 chans a (Z :. x :. y :. 2) =  blueFromDouble $ a (Z :. x :. y)
                 chans _ (Z :. _ :. _ :. 3) = 255
-                t n = round $ 255 * ( 0.5 + 0.5*cos( (fromIntegral n) / 10 ) )
-                redFromDouble = t
-                greenFromDouble x = t (x+5)
-                blueFromDouble x = t (x+10)
+                light=[253,246,227]
+                dark=[0,43,54]
+                redFromDouble :: Word8 -> Word8
+                redFromDouble   x = round $! (light!!0)*(1-p) + p*(dark!!0)
+                  where p = (fromIntegral x) / 255
+                greenFromDouble x = round $! (light!!1)*(1-p) + p*(dark!!1)
+                  where p = (fromIntegral x) / 255
+                blueFromDouble  x = round $! (light!!2)*(1-p) + p*(dark!!2)
+                  where p = (fromIntegral x) / 255
 
 force = runIdentity . R.computeP
 

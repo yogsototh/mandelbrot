@@ -1,13 +1,13 @@
 #!/usr/bin/env zsh
 
 # image width height
-width=2560
-height=1440
+width=2880
+height=900
 nbsteps=22000
 xpos="-1.45205"
-ypos="0.00001"
+ypos="0.000007"
 size="0.00005"
-filename="mandelbrot2.png"
+filename="mandelbrot.png"
 
 PARAMS="$width $height $nbsteps $xpos $ypos $size $filename"
 
