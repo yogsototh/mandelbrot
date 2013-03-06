@@ -9,18 +9,30 @@
 
 # \rm -f mandel.png && ./mandelbrot 500 200 256 -1.351 0.06 0.0005 mandel.png
 
+dir=stillimages
+[[ ! -e $dir ]] && mkdir $dir
+
+old=( $dir/*(.N) )
+(( $#old > 0 )) && {
+    print -- "cleaning..."
+    \rm -f $dir/*(.)
+}
 
 liste=()
-for i in  $(seq 60 120) $(seq 130 10 1000); do
-    fic="m-$i.png"
+i=1
+width=4.0
+while ((width>0.00005)); do
+    fic=$(printf "$dir/m-%03d.png" $i)
     \rm -f $fic
-    PREPARAMS="320 180 $i -1.351 0.06 0.0005 $fic"
+    PREPARAMS="1024 720 260 -1.2535555 0.3845245 $width $fic"
     print ./mandelbrot $PREPARAMS
     eval ./mandelbrot $PREPARAMS
     (($?>0)) && exit 0
     liste=( $liste $fic )
+    (( width /= 1.07 ))
+    ((i++))
 done
 
-convert -delay 20 -loop 0 $liste animandel.gif
-print -- "cleaning..."
-\rm -f $liste
+\rm -f animandel.mpeg && \
+avconv -f image2 -i $dir/m-%03d.png -r 30 animandel.mp4
+# convert -delay 10 -loop 0 $liste animandel.gif

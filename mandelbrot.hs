@@ -127,7 +127,7 @@ main = do
       then printUsage
       else do
         env <- return $ initGlobalParams args
-        print $ env
+        -- print $ env
         surface <- return $  matrix (imgWidth env) (imgHeight env)
         arr <- return $ R.fromFunction surface (mandel env)
         removeIfExists (filename env)
