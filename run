@@ -21,18 +21,22 @@ old=( $dir/*(.N) )
 liste=()
 i=1
 width=4.0
-while ((width>0.00005)); do
-    fic=$(printf "$dir/m-%03d.png" $i)
+imgheight=500
+imgwidth=$((imgheight*16/10))
+while ((width>0.000005)); do
+    fic=$(printf "$dir/m-%04d.png" $i)
     \rm -f $fic
-    PREPARAMS="1024 720 260 -1.2535555 0.3845245 $width $fic"
+    PREPARAMS="$imgwidth $imgheight 1000 -1.2535555 0.3845245 $width $fic"
     print ./mandelbrot $PREPARAMS
     eval ./mandelbrot $PREPARAMS
     (($?>0)) && exit 0
     liste=( $liste $fic )
-    (( width /= 1.07 ))
+    (( width *= 0.97 ))
     ((i++))
 done
 
+framerate=24
+quality=8
 \rm -f animandel.mpeg && \
-avconv -f image2 -i $dir/m-%03d.png -r 30 animandel.mp4
+avconv -f image2 -i "$dir/m-%04d.png" -r $framerate -qscale $quality -s ${imgwidth}x${imgheight} animandel.mp4
 # convert -delay 10 -loop 0 $liste animandel.gif

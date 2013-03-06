@@ -35,6 +35,24 @@ data Global = Global {
         , filename :: String
         } deriving (Show,Read)
 
+data Color = Color { red   :: {-# UNPACK #-} !Word8
+                   , green :: {-# UNPACK #-} !Word8
+                   , blue  :: {-# UNPACK #-} !Word8 }
+
+doubleToColor :: Double -> Color
+doubleToColor x = Color {
+                  red = redFromDouble x
+                , green = greenFromDouble x
+                , blue = blueFromDouble  x }
+  where
+      light=[253,246,227]
+      dark=[0,43,54]
+      redFromDouble :: Double -> Word8
+      redFromDouble   p = round $! (light!!0)*(1-p) + p*(dark!!0)
+      greenFromDouble :: Double -> Word8
+      greenFromDouble p = round $! (light!!1)*(1-p) + p*(dark!!1)
+      blueFromDouble :: Double -> Word8
+      blueFromDouble  p = round $! (light!!2)*(1-p) + p*(dark!!2)
 
 intToDouble :: Int -> Double
 intToDouble = fromInteger . toInteger
@@ -75,7 +93,7 @@ mandel env (Z :. i :. j ) = (intToDouble (m `rem` 512) :: Double) / (intToDouble
     where x = indexToDouble j (imgWidth env) (xpos env) (width env)
           y = indexToDouble i (imgHeight env) (ypos env) (height env)
           n = f (C x y) (C 0 0) (nbsteps env)
-          m | n == 0 = div ((nbsteps env) * 90) 100
+          m | n == 0 = nbsteps env
             | otherwise = n
 
 
@@ -85,19 +103,11 @@ toImage arr = D.RGBA $
                   R.traverse arr8 (:. 4) chans
               where
                 arr8 = R.map (floor . (*255) . min 1 . max 0) arr
-                chans a (Z :. x :. y :. 0) =   redFromDouble $ a (Z :. x :. y)
-                chans a (Z :. x :. y :. 1) = greenFromDouble $ a (Z :. x :. y)
-                chans a (Z :. x :. y :. 2) =  blueFromDouble $ a (Z :. x :. y)
+                chans a (Z :. x :. y :. 0) =   red $ w8ToColor $ a (Z :. x :. y)
+                chans a (Z :. x :. y :. 1) = green $ w8ToColor $ a (Z :. x :. y)
+                chans a (Z :. x :. y :. 2) =  blue $ w8ToColor $ a (Z :. x :. y)
                 chans _ (Z :. _ :. _ :. 3) = 255
-                light=[253,246,227]
-                dark=[0,43,54]
-                redFromDouble :: Word8 -> Word8
-                redFromDouble   x = round $! (light!!0)*(1-p) + p*(dark!!0)
-                  where p = (fromIntegral x) / 255
-                greenFromDouble x = round $! (light!!1)*(1-p) + p*(dark!!1)
-                  where p = (fromIntegral x) / 255
-                blueFromDouble  x = round $! (light!!2)*(1-p) + p*(dark!!2)
-                  where p = (fromIntegral x) / 255
+                w8ToColor n = doubleToColor $ (fromIntegral n) / 255
 
 force = runIdentity . R.computeP
 
