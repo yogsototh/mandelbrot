@@ -33,6 +33,9 @@ while ((width>0.00005)); do
     ((i++))
 done
 
+cmd=avconv
+which $cmd >/dev/null || cmd=ffmpeg
+
 \rm -f animandel.mpeg && \
-avconv -f image2 -i $dir/m-%03d.png -r 30 animandel.mp4
+$cmd -f image2 -i $dir/m-%03d.png -r 30 animandel.mp4
 # convert -delay 10 -loop 0 $liste animandel.gif
