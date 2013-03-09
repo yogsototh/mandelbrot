@@ -1,4 +1,7 @@
 #!/usr/bin/env zsh
+
+nbcore=4
+
 # arguments are:
 #   width nb pixels
 #   height nb pixels
@@ -18,20 +21,25 @@ old=( $dir/*(.N) )
     \rm -f $dir/*(.)
 }
 
+# posx=-1.2535555
+# posy=0.3845245 
+posx=-1.768573656315270993281742915329544712934120053405549882337511135282776553364635382
+posy=-0.000964296851358280000176242720373819448274776122656563565285
+
 liste=()
 i=1
-width=4.0
+width=8.0
 imgheight=500
 imgwidth=$((imgheight*16/10))
-while ((width>0.000005)); do
+while ((width>0.00000005)); do
     fic=$(printf "$dir/m-%04d.png" $i)
     \rm -f $fic
-    PREPARAMS="$imgwidth $imgheight 1000 -1.2535555 0.3845245 $width $fic"
+    PREPARAMS="$imgwidth $imgheight 1000 $posx $posy $width $fic"
     print ./mandelbrot $PREPARAMS
-    eval ./mandelbrot $PREPARAMS
+    eval ./mandelbrot +RTS -N$nbcore -RTS $PREPARAMS
     (($?>0)) && exit 0
     liste=( $liste $fic )
-    (( width *= 0.97 ))
+    (( width *= 0.95 ))
     ((i++))
 done
 
