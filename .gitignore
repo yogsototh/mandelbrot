@@ -6,3 +6,4 @@ mandelbrot
 stillimages
 *.mp4
 *.gif
+.DS_Store

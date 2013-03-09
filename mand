@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 # image width height
-width=2880
+width=1440
 height=900
 nbsteps=22000
 xpos="-1.45205"
@@ -11,4 +11,5 @@ filename="mandelbrot.png"
 
 PARAMS="$width $height $nbsteps $xpos $ypos $size $filename"
 
-eval time ./mandelbrot $PARAMS
+print -- "Doing the big picture"
+eval time ./mandelbrot +RTS -N4 -RTS $PARAMS
