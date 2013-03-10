@@ -7,3 +7,5 @@ stillimages
 *.mp4
 *.gif
 .DS_Store
+cabal-dev
+dist

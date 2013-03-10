@@ -15,11 +15,11 @@ nbcore=4
 dir=stillimages
 [[ ! -e $dir ]] && mkdir $dir
 
-old=( $dir/*(.N) )
-(( $#old > 0 )) && {
-    print -- "cleaning..."
-    \rm -f $dir/*(.)
-}
+# old=( $dir/*(.N) )
+# (( $#old > 0 )) && {
+#     print -- "cleaning..."
+#     \rm -f $dir/*(.)
+# }
 
 # posx=-1.2535555
 # posy=0.3845245 
@@ -27,11 +27,11 @@ posx=-1.768573656315270993281742915329544712934120053405549882337511135282776553
 posy=-0.0009642968513582800001762427203738194482747761226565635652857831533070475543666558930286153827950716700828887932578932976924523447497708248894734256480183898683164582055541842171815899305250842692638349057118793296768325124255746563
 
 liste=()
-i=1
-width=8.0
+i=1053
+width=0.0000000000001
 imgheight=720
 imgwidth=$((imgheight*16/10))
-while ((width>0.0000000000001)); do
+while ((width>1.e-200)); do
     fic=$(printf "$dir/m-%04d.png" $i)
     \rm -f $fic
     PREPARAMS="$imgwidth $imgheight 1000 $posx $posy $width $fic"
@@ -39,7 +39,7 @@ while ((width>0.0000000000001)); do
     eval ./mandelbrot +RTS -N$nbcore -RTS $PREPARAMS
     (($?>0)) && exit 0
     liste=( $liste $fic )
-    (( width *= 0.97 ))
+    (( width *= 0.95 ))
     ((i++))
 done
 

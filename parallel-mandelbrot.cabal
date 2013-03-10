@@ -15,7 +15,10 @@ cabal-version:       >=1.8
 
 executable parallel-mandelbrot
   main-is: mandelbrot.hs
-  -- other-modules:
+  ghc-options: -O2 -rtsopts -threaded
+  other-modules:       SquareRoot
   build-depends:       base ==4.5.*
   build-depends:       repa ==3.*
   build-depends:       repa-devil ==0.3.*
+  build-depends:		mtl ==2.1.2
+  build-depends:		directory ==1.1.0.2
